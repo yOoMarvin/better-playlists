@@ -12,19 +12,35 @@ let fakeServerData = {
     playlists: [
       {
         name: 'My favorites',
-        songs: ['Beat It,', 'Canelloni Makaroni', 'Rosa helikopter']
+        songs: [
+          {name:'Beat It', duration:1345}, 
+          {name:'Canelloni Makaroni', duration:1236},
+          {name:'Rosa helikopter', duration: 70000}
+        ]
       },
       {
         name: 'Discover Weekly',
-        songs: ['Le Song', 'The song', 'The lalala']
+        songs: [
+          {name:'Le Song', duration:1345}, 
+          {name:'The Song', duration:1236},
+          {name:'The lalala', duration: 70000}
+        ]
       },
       {
         name: 'Another Playlist- the best',
-        songs: ['Le Song', 'The song', 'The lalala']
+        songs: [
+          {name:'Le Song', duration:1345}, 
+          {name:'The Song', duration:1236},
+          {name:'The lalala', duration: 70000}
+        ]
       },
       {
       name: 'Best Playlists ever',
-      songs: ['Le Song', 'The song', 'The lalala']
+      songs: [
+        {name:'Le Song', duration:1345}, 
+        {name:'The Song', duration:1236},
+        {name:'The lalala', duration: 70000}
+      ]
       }
     ]
   } 
@@ -32,16 +48,33 @@ let fakeServerData = {
 
 
 // COMPONENTS
-class Aggregate extends Component {
+class PlaylistsCounter extends Component {
   render() {
     return (
       <div style={{...defaultStyle, width: '40%', display: 'inline-block'}}>
-        <h2>{this.props.playlists && this.props.playlists.length} Text</h2>
+        <h2>{this.props.playlists.length} playlists</h2>
       </div>
     );
   }
 }
 
+class HoursCounter extends Component {
+  render() {
+    let allSongs = this.props.playlists.reduce((songs, eachPlaylist) => {
+      return songs.concat(eachPlaylist.songs)
+    } , [])
+
+    let totalDuration = allSongs.reduce((sum, eachSong) => {
+      return sum + eachSong.duration
+    }, 0)
+
+    return (
+      <div style={{...defaultStyle, width: '40%', display: 'inline-block'}}>
+        <h2>{Math.round(totalDuration / 60 / 60)} hours</h2>
+      </div>
+    );
+  }
+}
 
 class Filter extends Component {
   render() {
@@ -95,8 +128,8 @@ class App extends Component {
           <h1 style={{... defaultStyle, 'font-size': '54px'}}>
             {this.state.serverData.user.name}'s Playlists
           </h1>}
-          <Aggregate playlists={this.state.serverData.user.playlists}/>
-          <Aggregate />
+          <PlaylistsCounter playlists={this.state.serverData.user.playlists}/>
+          <HoursCounter playlists={this.state.serverData.user.playlists}/>
           <Filter />
           <Playlist />
           <Playlist />
