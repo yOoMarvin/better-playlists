@@ -66,7 +66,8 @@ class App extends Component {
     return (
       <div className="App">
         <h1 style={{... defaultStyle, 'font-size': '54px'}}>
-          {this.state.serverData.user && this.state.serverData.user.name}'s Playlists
+          {this.state.serverData.user && 
+            this.state.serverData.user.name}'s Playlists
         </h1>
         <Aggregate />
         <Aggregate />
