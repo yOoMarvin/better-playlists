@@ -8,10 +8,30 @@ let defaultStyle = {
 // Fake Data here
 let fakeServerData = {
   user: {
-    name: 'Marvin'
+    name: 'Marvin',
+    playlists: [
+      {
+        name: 'My favorites',
+        songs: ['Beat It,', 'Canelloni Makaroni', 'Rosa helikopter']
+      },
+      {
+        name: 'Discover Weekly',
+        songs: ['Le Song', 'The song', 'The lalala']
+      },
+    {
+      name: 'Another Playlist- the best',
+      songs: ['Le Song', 'The song', 'The lalala']
+    },
+    {
+    name: 'Best Playlists ever',
+    songs: ['Le Song', 'The song', 'The lalala']
+  }
+    ]
   }
 };
 
+
+// COMPONENTS
 class Aggregate extends Component {
   render() {
     return (
