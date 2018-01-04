@@ -18,16 +18,16 @@ let fakeServerData = {
         name: 'Discover Weekly',
         songs: ['Le Song', 'The song', 'The lalala']
       },
-    {
-      name: 'Another Playlist- the best',
+      {
+        name: 'Another Playlist- the best',
+        songs: ['Le Song', 'The song', 'The lalala']
+      },
+      {
+      name: 'Best Playlists ever',
       songs: ['Le Song', 'The song', 'The lalala']
-    },
-    {
-    name: 'Best Playlists ever',
-    songs: ['Le Song', 'The song', 'The lalala']
-  }
+      }
     ]
-  }
+  } 
 };
 
 
@@ -36,7 +36,7 @@ class Aggregate extends Component {
   render() {
     return (
       <div style={{...defaultStyle, width: '40%', display: 'inline-block'}}>
-        <h2>Number Text</h2>
+        <h2>{this.props.playlists && this.props.playlists.length} Text</h2>
       </div>
     );
   }
@@ -78,23 +78,33 @@ class App extends Component {
     this.state = {serverData: {}}
   }
   componentDidMount() {
-    this.setState({serverData: fakeServerData});
+    //Wrap this in a timeout to make it more clear that data is loaded later
+    //That's why we use the and operator when binding data
+    //So this is just for demonstration purpose
+    setTimeout(() => {
+      this.setState({serverData: fakeServerData});
+    }, 1000);
   }
   render() {
     let name = 'Marvin'
     let headerStyle = {color: 'red', 'font-size': '40px'}
     return (
       <div className="App">
-        <h1 style={{... defaultStyle, 'font-size': '54px'}}>
-          {this.state.serverData.user && 
-            this.state.serverData.user.name}'s Playlists
-        </h1>
-        <Aggregate />
-        <Aggregate />
-        <Filter />
-        <Playlist />
-        <Playlist />
-        <Playlist />
+        {this.state.serverData.user ? //only show the stuff if it has data. Check the data.
+        <div>
+          <h1 style={{... defaultStyle, 'font-size': '54px'}}>
+            {this.state.serverData.user.name}'s Playlists
+          </h1>}
+          <Aggregate playlists={this.state.serverData.user.playlists}/>
+          <Aggregate />
+          <Filter />
+          <Playlist />
+          <Playlist />
+          <Playlist />
+        </div> : <h1 style={defaultStyle}>Loading...</h1>
+        //If the stuff above exists, show it. Otherwise write loading...
+      }
+
       </div>
     );
   }
