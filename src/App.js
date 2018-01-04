@@ -22,16 +22,16 @@ let fakeServerData = {
         name: 'Discover Weekly',
         songs: [
           {name:'Le Song', duration:1345}, 
-          {name:'The Song', duration:1236},
-          {name:'The lalala', duration: 70000}
+          {name:'Hey hey hey', duration:1236},
+          {name:'Halelulja', duration: 70000}
         ]
       },
       {
-        name: 'Another Playlist- the best',
+        name: 'Another Playlist',
         songs: [
-          {name:'Le Song', duration:1345}, 
-          {name:'The Song', duration:1236},
-          {name:'The lalala', duration: 70000}
+          {name:'Take it off', duration:1345}, 
+          {name:'Blabla', duration:1236},
+          {name:'Soul sister', duration: 70000}
         ]
       },
       {
@@ -90,14 +90,15 @@ class Filter extends Component {
 
 class Playlist extends Component {
   render() {
+    let playlist = this.props.playlist //just a shorthand
     return(
       <div style={{...defaultStyle, width: '25%', display: 'inline-block'}}>
         <img />
-        <h3>Playlist Name</h3>
+        <h3>{playlist.name}</h3>
         <ul>
-          <li>Song 1</li>
-          <li>Song 2</li>
-          <li>Song 3</li>
+          {playlist.songs.map(song =>
+            <li>{song.name}</li>
+          )}
         </ul>
       </div>
     );
@@ -131,9 +132,9 @@ class App extends Component {
           <PlaylistsCounter playlists={this.state.serverData.user.playlists}/>
           <HoursCounter playlists={this.state.serverData.user.playlists}/>
           <Filter />
-          <Playlist />
-          <Playlist />
-          <Playlist />
+          {this.state.serverData.user.playlists.map(playlist => 
+            <Playlist playlist={playlist}/>
+          )}
         </div> : <h1 style={defaultStyle}>Loading...</h1>
         //If the stuff above exists, show it. Otherwise write loading...
       }
