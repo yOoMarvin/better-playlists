@@ -109,7 +109,10 @@ class Playlist extends Component {
 class App extends Component {
   constructor() {
     super()
-    this.state = {serverData: {}}
+    this.state = {
+      serverData: {},
+      filterString: ''
+    }
   }
   componentDidMount() {
     //Wrap this in a timeout to make it more clear that data is loaded later
@@ -118,6 +121,10 @@ class App extends Component {
     setTimeout(() => {
       this.setState({serverData: fakeServerData});
     }, 1000);
+    // just for dummy use, simulate typing
+    setTimeout(() => {
+      this.setState({filterString: 'weekly'});
+    }, 2000);
   }
   render() {
     let name = 'Marvin'
@@ -132,7 +139,10 @@ class App extends Component {
           <PlaylistsCounter playlists={this.state.serverData.user.playlists}/>
           <HoursCounter playlists={this.state.serverData.user.playlists}/>
           <Filter />
-          {this.state.serverData.user.playlists.map(playlist => 
+          {this.state.serverData.user.playlists.filter(playlist =>
+            playlist.name.toLowerCase().includes(
+              this.state.filterString.toLocaleLowerCase())
+          ).map(playlist => 
             <Playlist playlist={playlist}/>
           )}
         </div> : <h1 style={defaultStyle}>Loading...</h1>
