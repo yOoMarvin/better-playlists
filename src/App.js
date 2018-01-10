@@ -125,6 +125,11 @@ class App extends Component {
   render() {
     let name = 'Marvin'
     let headerStyle = {color: 'red', 'font-size': '40px'}
+    let playlistsToRender = this.state.serverData.user ? this.state.serverData.user.playlists
+      .filter(playlist =>
+        playlist.name.toLowerCase().includes(
+          this.state.filterString.toLocaleLowerCase())
+    ) : []
     return (
       <div className="App">
         {this.state.serverData.user ? //only show the stuff if it has data. Check the data.
@@ -132,10 +137,12 @@ class App extends Component {
           <h1 style={{... defaultStyle, 'font-size': '54px'}}>
             {this.state.serverData.user.name}'s Playlists
           </h1>}
-          <PlaylistsCounter playlists={this.state.serverData.user.playlists}/>
-          <HoursCounter playlists={this.state.serverData.user.playlists}/>
+          <PlaylistsCounter playlists={playlistsToRender}/>
+
+          <HoursCounter playlists={playlistsToRender}/>
+
           <Filter onTextChange={text => this.setState({filterString: text })}/>
-          {this.state.serverData.user.playlists.filter(playlist =>
+          {playlistsToRender.filter(playlist =>
             playlist.name.toLowerCase().includes(
               this.state.filterString.toLocaleLowerCase())
           ).map(playlist => 
