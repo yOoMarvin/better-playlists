@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import queryString from 'query-string';
 
 let defaultStyle = {
   color: '#fff'
@@ -93,7 +94,7 @@ class Playlist extends Component {
     let playlist = this.props.playlist //just a shorthand
     return(
       <div style={{...defaultStyle, width: '25%', display: 'inline-block'}}>
-        <img />
+        <img src={playlist.imageUrl} style={{width: '60px'}} />
         <h3>{playlist.name}</h3>
         <ul>
           {playlist.songs.map(song =>
@@ -115,40 +116,62 @@ class App extends Component {
     }
   }
   componentDidMount() {
-    //Wrap this in a timeout to make it more clear that data is loaded later
-    //That's why we use the and operator when binding data
-    //So this is just for demonstration purpose
-    setTimeout(() => {
-      this.setState({serverData: fakeServerData});
-    }, 1000);
+    // fetch data here
+    let parsed = queryString.parse(window.location.search);
+    let acessToken = parsed.access_token;
+
+    fetch('https://api.spotify.com/v1/me', {
+     headers: {'Authorization': 'Bearer ' + acessToken}
+    }).then(response => response.json())
+    .then(data => this.setState({
+      user: {
+        name: data.display_name
+      }
+    }))
+
+    fetch('https://api.spotify.com/v1/me/playlists', {
+      headers: {'Authorization': 'Bearer ' + acessToken}
+    }).then(response => response.json())
+    .then(data => this.setState({
+      playlists: data.items.map(item => ({
+        name: item.name,
+        imageUrl: item.images[0].url, 
+        songs: []
+      }))
+    }))
   }
   render() {
     let name = 'Marvin'
     let headerStyle = {color: 'red', 'font-size': '40px'}
-    let playlistsToRender = this.state.serverData.user ? this.state.serverData.user.playlists
-      .filter(playlist =>
-        playlist.name.toLowerCase().includes(
-          this.state.filterString.toLocaleLowerCase())
-    ) : []
+    let playlistsToRender = 
+      this.state.user && 
+      this.state.playlists 
+        ? this.state.playlists.filter(playlist =>
+          playlist.name.toLowerCase().includes(
+            this.state.filterString.toLocaleLowerCase())) 
+        : []
     return (
       <div className="App">
-        {this.state.serverData.user ? //only show the stuff if it has data. Check the data.
+        {this.state.user ? //only show the stuff if it has data. Check the data.
         <div>
           <h1 style={{... defaultStyle, 'font-size': '54px'}}>
-            {this.state.serverData.user.name}'s Playlists
+            {this.state.user.name}'s Playlists
           </h1>}
+          
           <PlaylistsCounter playlists={playlistsToRender}/>
-
           <HoursCounter playlists={playlistsToRender}/>
-
           <Filter onTextChange={text => this.setState({filterString: text })}/>
+
           {playlistsToRender.filter(playlist =>
             playlist.name.toLowerCase().includes(
               this.state.filterString.toLocaleLowerCase())
           ).map(playlist => 
             <Playlist playlist={playlist}/>
           )}
-        </div> : <h1 style={defaultStyle}>Loading...</h1>
+        </div> : <button onClick={()=>window.location = 'http://localhost:8888/login'}
+        style={{'padding': '20px', 'font-size': '25px', 'margin-top': '20px'}}>
+          Sign in with Spotify
+        </button>
         //If the stuff above exists, show it. Otherwise write loading...
       }
 
