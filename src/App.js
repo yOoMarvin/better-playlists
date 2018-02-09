@@ -118,14 +118,11 @@ class App extends Component {
   componentDidMount() {
     // fetch data here
     let parsed = queryString.parse(window.location.search);
-    let acessToken = parsed.access_token;
-
-    if (!acessToken){
+    let accessToken = parsed.access_token;
+    if (!accessToken)
       return;
-    }
-
     fetch('https://api.spotify.com/v1/me', {
-     headers: {'Authorization': 'Bearer ' + acessToken}
+      headers: {'Authorization': 'Bearer ' + accessToken}
     }).then(response => response.json())
     .then(data => this.setState({
       user: {
@@ -134,13 +131,13 @@ class App extends Component {
     }))
 
     fetch('https://api.spotify.com/v1/me/playlists', {
-      headers: {'Authorization': 'Bearer ' + acessToken}
+      headers: {'Authorization': 'Bearer ' + accessToken}
     }).then(response => response.json())
     .then(playlistData => {
       let playlists = playlistData.items
       let trackDataPromises = playlists.map(playlist => {
         let responsePromise = fetch(playlist.tracks.href, {
-          headers: {'Authorization': 'Bearer ' + acessToken}
+          headers: {'Authorization': 'Bearer ' + accessToken}
         })
         let trackDataPromise = responsePromise
           .then(response => response.json())
@@ -171,7 +168,6 @@ class App extends Component {
     }))
   }
   render() {
-    let name = 'Marvin'
     let headerStyle = {color: 'red', 'font-size': '40px'}
     let playlistsToRender = 
       this.state.user && 
